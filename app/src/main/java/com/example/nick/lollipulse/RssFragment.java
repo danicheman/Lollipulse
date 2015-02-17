@@ -8,11 +8,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
+//import android.widget.AdapterView;
+//import android.widget.AdapterView.OnItemClickListener;
+import it.sephiroth.android.library.widget.AdapterView.OnItemClickListener;
 //import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -36,7 +38,7 @@ public class RssFragment extends Fragment implements OnItemClickListener {
 			view = inflater.inflate(R.layout.fragment_layout, container, false);
 			progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
 			listView = (HListView) view.findViewById(R.id.hListView1); //new
-			//listView.setOnItemClickListener(this);  //fix this
+			listView.setOnItemClickListener(this);  //fix this
 			startService();
 		} else {
 			// If we are returning from a configuration change:
@@ -71,15 +73,26 @@ public class RssFragment extends Fragment implements OnItemClickListener {
 				Toast.makeText(getActivity(), "An error occurred while downloading the rss feed.",
 						Toast.LENGTH_LONG).show();
 			}
-		};
+		}
 	};
-
+    /*
 	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+	void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.e(Constants.TAG,"clicked a story");
 		RssAdapter adapter = (RssAdapter) parent.getAdapter();
 		RssItem item = (RssItem) adapter.getItem(position);
 		Uri uri = Uri.parse(item.getLink());
 		Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 		startActivity(intent);
-	}
+	}*/
+
+    @Override
+    public void onItemClick(it.sephiroth.android.library.widget.AdapterView<?> parent, View view, int position, long id) {
+        Log.e(Constants.TAG,"clicked a story");
+        RssAdapter adapter = (RssAdapter) parent.getAdapter();
+        RssItem item = (RssItem) adapter.getItem(position);
+        Uri uri = Uri.parse(item.getLink());
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(intent);
+    }
 }
