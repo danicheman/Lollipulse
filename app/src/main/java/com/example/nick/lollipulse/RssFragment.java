@@ -36,7 +36,9 @@ public class RssFragment extends Fragment implements OnItemClickListener {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		if (view == null) {
 			view = inflater.inflate(R.layout.fragment_layout, container, false);
-			progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+			//progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+            //progressBar.setVisibility(View.VISIBLE);
+            
 			listView = (HListView) view.findViewById(R.id.hListView1); //new
 			listView.setOnItemClickListener(this);  //fix this
 			startService();
@@ -64,7 +66,8 @@ public class RssFragment extends Fragment implements OnItemClickListener {
 		@SuppressWarnings("unchecked")
 		@Override
 		protected void onReceiveResult(int resultCode, Bundle resultData) {
-			progressBar.setVisibility(View.GONE);
+			//progressBar.setVisibility(View.GONE);
+            Log.e(Constants.TAG, "hide progress bar notification");
 			List<RssItem> items = (List<RssItem>) resultData.getSerializable(RssService.ITEMS);
 			if (items != null) {
 				RssAdapter adapter = new RssAdapter(getActivity(), items);
@@ -93,6 +96,7 @@ public class RssFragment extends Fragment implements OnItemClickListener {
         RssItem item = (RssItem) adapter.getItem(position);
         Uri uri = Uri.parse(item.getLink());
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 }

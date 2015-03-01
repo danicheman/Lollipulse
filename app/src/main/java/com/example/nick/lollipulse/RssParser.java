@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.Integer;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -42,28 +43,54 @@ public class RssParser {
             String title = null;
             String link = null;
             String thumb = null;
-
+            String height = null;
+            int    biggestHeight = 0;
+            int    currentHeight = 0;
+            
             List<RssItem> items = new ArrayList<RssItem>();
             while (parser.next() != XmlPullParser.END_DOCUMENT) {
-                if (parser.getEventType() != XmlPullParser.START_TAG) {
+                //end of item - save
+                if (parser.getEventType() == XmlPullParser.END_TAG && parser.getName().equals("item")) {
+                    if(title == null || link == null || thumb == null) {
+                        //throw exception required value not found
+                    } else {
+                        RssItem item = new RssItem(title, link, thumb);
+                        Log.d(Constants.TAG, "item stuff: "+ title + " " + link + " " + thumb);
+                        items.add(item);
+                        title = null;
+                        link = null;
+                        thumb = null;    
+                    }
+                    
+                    continue;
+                    
+                } else if (parser.getEventType() != XmlPullParser.START_TAG) {
+                    
+                    //if event type is END_TAG and getName equals item, save article
                     continue;
                 }
+                
                 String name = parser.getName();
                 if (name.equals("title")) {
                     title = readTitle(parser);
                 } else if (name.equals("link")) {
                     link = readLink(parser);
                 } else if (name.equals("media:thumbnail")) {
-                    thumb = parser.getAttributeValue(null, "url");
-                } if(name.equals("description")) {
+                    
+                    height = parser.getAttributeValue(ns, "height");
+                    if(height != null && !height.isEmpty())
+                        currentHeight = Integer.parseInt(height);
+                    else currentHeight = 0;
+
+                    if(currentHeight >= biggestHeight) {
+                        if(biggestHeight < currentHeight) {
+                            biggestHeight = currentHeight;
+                        }
+                        thumb = parser.getAttributeValue(ns, "url");
+                    }
+
+                } else if(name.equals("description")) {
                     parser.next();
-                }
-                if (title != null && link != null && thumb != null) {
-                    RssItem item = new RssItem(title, link, thumb);
-                    items.add(item);
-                    title = null;
-                    link = null;
-                    thumb = null;
                 }
             }
             return items;
@@ -82,6 +109,8 @@ public class RssParser {
 		return link;
 	}
 
+
+    
 	private String readTitle(XmlPullParser parser) throws XmlPullParserException, IOException {
 		parser.require(XmlPullParser.START_TAG, ns, "title");
 		String title = readText(parser);
