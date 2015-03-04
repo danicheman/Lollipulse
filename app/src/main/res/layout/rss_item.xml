@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="75dip">
+    android:layout_width="@dimen/rss_item_width"
+    android:layout_height="@dimen/rss_item_height">
     <ImageView
         android:id="@+id/itemImage"
-        android:layout_width="120dip"
-        android:layout_height="80dip" />
+        android:scaleType="centerCrop"
+        android:layout_width="@dimen/rss_item_width"
+        android:layout_height="@dimen/rss_item_height" />
     <TextView
         android:id="@+id/itemTitle"
         android:textSize="10dp"
@@ -13,9 +14,9 @@
         android:shadowColor="#000"
         android:shadowDx="-1"
         android:shadowDy="-1"
-        android:shadowRadius="10"
+        android:shadowRadius="15"
         android:layout_alignParentBottom="true"
-        android:layout_width="120dip"
+        android:layout_width="@dimen/rss_item_width"
         android:layout_height="wrap_content" />
 
 

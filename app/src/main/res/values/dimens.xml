@@ -7,4 +7,6 @@
     <dimen name="item_size_1">70dip</dimen>
     <dimen name="item_size_2">90dip</dimen>
     <dimen name="item_size_3">110dip</dimen>
+    <dimen name="rss_item_height">120dip</dimen>
+    <dimen name="rss_item_width">120dip</dimen>
 </resources>
