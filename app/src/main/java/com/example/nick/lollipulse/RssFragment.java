@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +19,9 @@ import android.view.ViewGroup;
 //import android.widget.AdapterView.OnItemClickListener;
 import it.sephiroth.android.library.widget.AdapterView.OnItemClickListener;
 //import android.widget.ListView;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.webkit.WebViewFragment;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import it.sephiroth.android.library.widget.HListView;
@@ -94,9 +100,48 @@ public class RssFragment extends Fragment implements OnItemClickListener {
         Log.e(Constants.TAG,"clicked a story");
         RssAdapter adapter = (RssAdapter) parent.getAdapter();
         RssItem item = (RssItem) adapter.getItem(position);
-        Uri uri = Uri.parse(item.getLink());
-        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+
+        String link = item.getLink();
+
+        //Uri uri = Uri.parse(item.getLink());
+        //Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        //startActivity(intent);
+        //Intent webViewIntent = new Intent(getActivity(), ItemWebViewFragmentActivity.class);
+
+        //Intent webViewIntent = (WebViewFragment) getFragment
+
+        //Bundle webViewBundle = new Bundle();
+        //webViewBundle.putString("link", item.getLink());
+
+        //getActivity().startActivity(webViewIntent,webViewBundle);
+
+        if (getActivity().findViewById(R.id.hListView1) != null) {
+            ViewItemFragment vif = (ViewItemFragment) getFragmentManager().findFragmentById(R.id.webview);
+
+                Log.i(Constants.TAG,"Add fragment, going to: "+link);
+                Bundle linkBundle = new Bundle();
+                linkBundle.putString("link", link);
+
+                vif = new ViewItemFragment();
+                vif.setArguments(linkBundle);
+
+                // We are in dual fragment (Tablet and so on)
+                FragmentManager fm = getFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+
+
+
+                //wvf.updateUrl(link);
+                ft.replace(R.id.fragment_container, vif);
+                ft.commit();
+        }
+        else {
+            Log.i(Constants.TAG,"Start Activity");
+            //Intent i = new Intent(this, WebViewActivity.class);
+            //i.putExtra("link", link);
+            //startActivity(i);
+        }
+
     }
 }
