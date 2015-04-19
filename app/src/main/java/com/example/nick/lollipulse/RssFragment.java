@@ -61,6 +61,7 @@ public class RssFragment extends Fragment implements OnItemClickListener {
 	private void startService() {
 		Intent intent = new Intent(getActivity(), RssService.class);
 		intent.putExtra(RssService.RECEIVER, resultReceiver);
+        intent.putExtra(RssService.RSS_LINK, "http://www.phonearena.com/feed/news");
 		getActivity().startService(intent);
 	}
 
@@ -73,7 +74,7 @@ public class RssFragment extends Fragment implements OnItemClickListener {
 		@Override
 		protected void onReceiveResult(int resultCode, Bundle resultData) {
 			//progressBar.setVisibility(View.GONE);
-            Log.e(Constants.TAG, "hide progress bar notification");
+            Log.d(Constants.TAG, "hide progress bar notification");
 			List<RssItem> items = (List<RssItem>) resultData.getSerializable(RssService.ITEMS);
 			if (items != null) {
 				RssAdapter adapter = new RssAdapter(getActivity(), items);
@@ -97,51 +98,15 @@ public class RssFragment extends Fragment implements OnItemClickListener {
 
     @Override
     public void onItemClick(it.sephiroth.android.library.widget.AdapterView<?> parent, View view, int position, long id) {
-        Log.e(Constants.TAG,"clicked a story");
+        Log.i(Constants.TAG,"clicked a story");
         RssAdapter adapter = (RssAdapter) parent.getAdapter();
         RssItem item = (RssItem) adapter.getItem(position);
 
         String link = item.getLink();
-
-        //Uri uri = Uri.parse(item.getLink());
-        //Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        //startActivity(intent);
-        //Intent webViewIntent = new Intent(getActivity(), ItemWebViewFragmentActivity.class);
-
-        //Intent webViewIntent = (WebViewFragment) getFragment
-
-        //Bundle webViewBundle = new Bundle();
-        //webViewBundle.putString("link", item.getLink());
-
-        //getActivity().startActivity(webViewIntent,webViewBundle);
-
-        if (getActivity().findViewById(R.id.hListView1) != null) {
-            ViewItemFragment vif = (ViewItemFragment) getFragmentManager().findFragmentById(R.id.webview);
-
-                Log.i(Constants.TAG,"Add fragment, going to: "+link);
-                Bundle linkBundle = new Bundle();
-                linkBundle.putString("link", link);
-
-                vif = new ViewItemFragment();
-                vif.setArguments(linkBundle);
-
-                // We are in dual fragment (Tablet and so on)
-                FragmentManager fm = getFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-
-
-
-                //wvf.updateUrl(link);
-                ft.replace(R.id.fragment_container, vif);
-                ft.commit();
-        }
-        else {
-            Log.i(Constants.TAG,"Start Activity");
-            //Intent i = new Intent(this, WebViewActivity.class);
-            //i.putExtra("link", link);
-            //startActivity(i);
-        }
+        Log.d(Constants.TAG,"Start Activity");
+        Intent i = new Intent(getActivity(), ItemWebViewFragmentActivity.class);
+        i.putExtra("link", link);
+        startActivity(i);
 
     }
 }

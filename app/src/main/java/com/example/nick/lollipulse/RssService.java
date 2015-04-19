@@ -16,7 +16,7 @@ import android.util.Log;
 
 public class RssService extends IntentService {
 
-	private static final String RSS_LINK = "http://feeds.bbci.co.uk/news/technology/rss.xml";
+	public static final String RSS_LINK = "link";
 	public static final String ITEMS = "items";
 	public static final String RECEIVER = "receiver";
 
@@ -26,20 +26,21 @@ public class RssService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		Log.e(Constants.TAG, "Service started");
+        String rssLink = intent.getStringExtra(RSS_LINK);
+		Log.d(Constants.TAG, "Attempting to load RSS feed "+rssLink);
 		List<RssItem> rssItems = null;
 		try {
 			RssParser parser = new RssParser();
-			rssItems = parser.parse(getInputStream(RSS_LINK));
+			rssItems = parser.parse(getInputStream(rssLink));
 		} catch (XmlPullParserException e) {
-			Log.w(e.getMessage(), e);
+			Log.w(Constants.TAG,e.getMessage(), e);
 		} catch (IOException e) {
-			Log.w(e.getMessage(), e);
+			Log.w(Constants.TAG,e.getMessage(), e);
 		}
 		Bundle bundle = new Bundle();
 		bundle.putSerializable(ITEMS, (Serializable) rssItems);
 		ResultReceiver receiver = intent.getParcelableExtra(RECEIVER);
-        Log.e(Constants.TAG, "Sending bundle");
+        Log.d(Constants.TAG, "Sending bundle");
 		receiver.send(0, bundle);
 	}
 
@@ -48,7 +49,7 @@ public class RssService extends IntentService {
 			URL url = new URL(link);
 			return url.openConnection().getInputStream();
 		} catch (IOException e) {
-			Log.w(Constants.TAG, "Exception while retrieving the input stream", e);
+			Log.e(Constants.TAG, "Exception while retrieving the input stream", e);
 			return null;
 		}
 	}

@@ -38,8 +38,10 @@ public class RssAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
-        String title;
-		if (convertView == null) {
+        String title = items.get(position).getTitle();
+		String url = items.get(position).getUrl();
+
+        if (convertView == null) {
 			convertView = View.inflate(context, R.layout.rss_item, null);
 			holder = new ViewHolder();
 			holder.itemTitle = (TextView) convertView.findViewById(R.id.itemTitle);
@@ -50,10 +52,11 @@ public class RssAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-        Log.e(Constants.TAG,"creating view for" + items.get(position).getTitle());
+        Log.d(Constants.TAG,"creating view for" + items.get(position).getTitle());
 
-        holder.itemTitle.setText(items.get(position).getTitle());
-        new ImageDownloader(holder.itemImage).execute(items.get(position).getUrl());
+        holder.itemTitle.setText(title);
+        if(!url.isEmpty()) new ImageDownloader(holder.itemImage).execute(url);
+        else Log.e(Constants.TAG, "No image found for: "+ title);
 		return convertView;
 	}
 

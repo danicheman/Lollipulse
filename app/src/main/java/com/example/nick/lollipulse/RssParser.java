@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.lang.Integer;
+
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -53,6 +56,7 @@ public class RssParser {
                 if (parser.getEventType() == XmlPullParser.END_TAG && parser.getName().equals("item")) {
                     if(title == null || link == null || thumb == null) {
                         //throw exception required value not found
+                        Log.e(Constants.TAG, "required value not found.");
                     } else {
                         RssItem item = new RssItem(title, link, thumb);
                         Log.d(Constants.TAG, "item stuff: "+ title + " " + link + " " + thumb);
@@ -76,20 +80,23 @@ public class RssParser {
                 } else if (name.equals("link")) {
                     link = readLink(parser);
                 } else if (name.equals("media:thumbnail")) {
-                    
+                    //regex through description for image link
+
+
                     height = parser.getAttributeValue(ns, "height");
-                    if(height != null && !height.isEmpty())
+                    if (height != null && !height.isEmpty())
                         currentHeight = Integer.parseInt(height);
                     else currentHeight = 0;
 
-                    if(currentHeight >= biggestHeight) {
-                        if(biggestHeight < currentHeight) {
+                    if (currentHeight >= biggestHeight) {
+                        if (biggestHeight < currentHeight) {
                             biggestHeight = currentHeight;
                         }
                         thumb = parser.getAttributeValue(ns, "url");
                     }
 
                 } else if(name.equals("description")) {
+                    thumb = getImageFromDescription(readText(parser));
                     parser.next();
                 }
             }
@@ -127,4 +134,36 @@ public class RssParser {
 		}
 		return result;
 	}
+
+    /**
+     * Search a description for an image link, return null if none is found.
+     *
+     * @param description
+     * @return String|null
+     */
+    private String getImageFromDescription(String description) {
+
+        Log.d(Constants.TAG,"recieved description: "+ description);
+        String imageLink = null;
+        try {
+            String myPattern = "src=\"([^\"]+)\"";
+            Pattern p = Pattern.compile(myPattern);
+            Matcher m = p.matcher(description);
+            if (m.find()) {
+                imageLink = m.group(1);
+                if(imageLink.indexOf("//") == 0) {
+                    imageLink = "http:" + imageLink;
+                }
+            } else {
+                Log.d(Constants.TAG, "no results from m.find()");
+            }
+
+        } catch(Exception e) {
+            Log.d(Constants.TAG, "image from description exception", e);
+            return null;
+        }
+
+        Log.e(Constants.TAG,"matched description image " + imageLink);
+        return imageLink;
+    }
 }
