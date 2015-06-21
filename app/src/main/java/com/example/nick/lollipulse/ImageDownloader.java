@@ -30,7 +30,8 @@ public class ImageDownloader extends AsyncTask<String, Void, Bitmap> {
             mIcon = BitmapFactory.decodeStream(in);
         } catch (Exception e) {
 
-            if(retry) {
+            if (false) {
+
                retry = false;
                Log.e(Constants.TAG,"Retry image" + url);
                return doInBackground(url);
@@ -38,9 +39,8 @@ public class ImageDownloader extends AsyncTask<String, Void, Bitmap> {
 
             Log.e(Constants.TAG, "Error loading url" + url+ " try to return default.");
             Log.e(Constants.TAG, "exception here", e);
-            String uri = "@drawable/no_image.jpg";
 
-            mIcon = BitmapFactory.decodeResource(Resources.getSystem(), R.drawable.no_image);
+            return BitmapFactory.decodeResource(Resources.getSystem(), R.drawable.no_image);
 
 
         }

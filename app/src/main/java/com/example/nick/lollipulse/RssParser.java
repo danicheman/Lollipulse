@@ -163,7 +163,7 @@ public class RssParser {
             return null;
         }
 
-        Log.e(Constants.TAG,"matched description image " + imageLink);
+        Log.d(Constants.TAG,"matched description image " + imageLink);
         return imageLink;
     }
 }

@@ -23,20 +23,33 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebViewFragment;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import it.sephiroth.android.library.widget.HListView;
 
 public class RssFragment extends Fragment implements OnItemClickListener {
 
-	private ProgressBar progressBar;
-	private HListView listView;
-	private View view;
+    private ProgressBar progressBar;
+    private HListView listView;
+    private View view;
+    private Feed feed;
+    private Feed[] feeds;
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setRetainInstance(true);
-	}
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        //savedInstanceState.get
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    public void setFeed(Feed f) {
+        feed = f;
+    }
+
+    public void setFeeds(Feed[] f) {
+        feeds = f;
+    }
+
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,7 +57,13 @@ public class RssFragment extends Fragment implements OnItemClickListener {
 			view = inflater.inflate(R.layout.fragment_layout, container, false);
 			//progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
             //progressBar.setVisibility(View.VISIBLE);
-            
+
+            //set the specific feed name
+            if(feed != null) {
+                TextView titleText = (TextView)view.findViewById(R.id.feedTitle);
+                titleText.setText(feed.name);
+            }
+
 			listView = (HListView) view.findViewById(R.id.hListView1); //new
 			listView.setOnItemClickListener(this);  //fix this
 			startService();
