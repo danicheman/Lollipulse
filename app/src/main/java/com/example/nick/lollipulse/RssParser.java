@@ -59,7 +59,7 @@ public class RssParser {
                         Log.e(Constants.TAG, "required value not found.");
                     } else {
                         RssItem item = new RssItem(title, link, thumb);
-                        Log.d(Constants.TAG, "item stuff: "+ title + " " + link + " " + thumb);
+                        //Log.d(Constants.TAG, "item stuff: "+ title + " " + link + " " + thumb);
                         items.add(item);
                         title = null;
                         link = null;
@@ -143,7 +143,7 @@ public class RssParser {
      */
     private String getImageFromDescription(String description) {
 
-        Log.d(Constants.TAG,"recieved description: "+ description);
+        //Log.d(Constants.TAG,"recieved description: "+ description);
         String imageLink = null;
         try {
             String myPattern = "src=\"([^\"]+)\"";
@@ -159,11 +159,11 @@ public class RssParser {
             }
 
         } catch(Exception e) {
-            Log.d(Constants.TAG, "image from description exception", e);
+            //Log.d(Constants.TAG, "image from description exception", e);
             return null;
         }
 
-        Log.d(Constants.TAG,"matched description image " + imageLink);
+        //Log.d(Constants.TAG,"matched description image " + imageLink);
         return imageLink;
     }
 }

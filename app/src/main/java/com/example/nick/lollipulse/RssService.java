@@ -19,6 +19,7 @@ public class RssService extends IntentService {
 	public static final String RSS_LINK = "link";
 	public static final String ITEMS = "items";
 	public static final String RECEIVER = "receiver";
+	public static final String POSITION = "position";
 
 	public RssService() {
 		super("RssService");
@@ -27,6 +28,7 @@ public class RssService extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
         String rssLink = intent.getStringExtra(RSS_LINK);
+		int position = (int)intent.getIntExtra(POSITION, 0);
 		Log.d(Constants.TAG, "Attempting to load RSS feed "+rssLink);
 		List<RssItem> rssItems = null;
 		try {
@@ -39,6 +41,7 @@ public class RssService extends IntentService {
 		}
 		Bundle bundle = new Bundle();
 		bundle.putSerializable(ITEMS, (Serializable) rssItems);
+		bundle.putSerializable(POSITION, position);
 		ResultReceiver receiver = intent.getParcelableExtra(RECEIVER);
         Log.d(Constants.TAG, "Sending bundle");
 		receiver.send(0, bundle);
